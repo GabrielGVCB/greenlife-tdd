@@ -1,0 +1,53 @@
+<div class="container py-4" style="max-width:620px;">
+	<a href="/actions" class="text-muted text-decoration-none small mb-3 d-inline-block">
+		<i class="bi bi-arrow-left me-1"></i> voltar
+	</a>
+	<div class="tip-card p-4">
+		<h2 class="fw-bold mb-4">
+			<i class="bi bi-tree me-2 text-primary-green"></i>
+			Registrar ação sustentável
+		</h2>
+		<form action="/actions/new" method="POST">
+			<div class="mb-3">
+				<label class="form-label">O que você fez?</label>
+				<input type="text" name="title" class="form-control" required minlength="3" maxlength="150"
+					placeholder="Ex: Troquei 5 lâmpadas por LED" />
+			</div>
+			<div class="mb-3">
+				<label class="form-label">Categoria</label>
+				<select name="categoryId" class="form-control">
+					<option value="">— Selecione —</option>
+					<% categories.forEach(function(c) { %>
+						<option value="<%= c.id %>"><%= c.name %></option>
+					<% }); %>
+				</select>
+			</div>
+			<div class="mb-3">
+				<label class="form-label">Relacionada a uma dica? (opcional)</label>
+				<select name="tipId" class="form-control">
+					<option value="">— Nenhuma —</option>
+					<% tips.forEach(function(t) { %>
+						<option value="<%= t.id %>"><%= t.title %></option>
+					<% }); %>
+				</select>
+			</div>
+			<div class="mb-3">
+				<label class="form-label">Impacto estimado (kg CO₂ economizados)</label>
+				<input type="number" name="impactKgCO2" class="form-control" step="0.1" min="0" value="0"
+					placeholder="Ex: 2.5" />
+				<small class="text-muted">Deixe 0 se não souber.</small>
+			</div>
+			<div class="mb-4">
+				<label class="form-label">Descrição (opcional)</label>
+				<textarea name="description" class="form-control" rows="3" maxlength="500"
+					placeholder="Conte mais sobre como foi..."></textarea>
+			</div>
+			<div class="d-grid gap-2">
+				<button type="submit" class="btn btn-primary btn-lg">
+					<i class="bi bi-check2 me-1"></i> Registrar
+				</button>
+				<a href="/actions" class="btn btn-outline-secondary">Cancelar</a>
+			</div>
+		</form>
+	</div>
+</div>

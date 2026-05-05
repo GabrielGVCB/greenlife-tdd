@@ -1,0 +1,66 @@
+<% if (user) { %>
+	<!-- Navbar para usuário logado -->
+	<nav class="navbar navbar-expand-lg sticky-top shadow-sm">
+		<div class="container-fluid px-lg-4">
+			<a class="navbar-brand" href="/home">
+				<span class="brand-dot"></span>Green <em style="font-style:italic;font-weight:300;">Life</em>
+			</a>
+
+			<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+
+			<div class="collapse navbar-collapse" id="navbarMain">
+				<ul class="navbar-nav me-auto ms-lg-4">
+					<li class="nav-item"><a class="nav-link" href="/home"><i class="bi bi-house-door me-1"></i> Início</a></li>
+					<li class="nav-item"><a class="nav-link" href="/community"><i class="bi bi-people me-1"></i> Comunidade</a></li>
+					<li class="nav-item"><a class="nav-link" href="/actions"><i class="bi bi-tree me-1"></i> Minhas Ações</a></li>
+					<li class="nav-item"><a class="nav-link" href="/favorites"><i class="bi bi-star me-1"></i> Favoritos</a></li>
+					<% if (user.role === 'admin') { %>
+						<li class="nav-item"><a class="nav-link text-primary-green fw-bold" href="/admin/dashboard"><i class="bi bi-shield-check me-1"></i> Admin</a></li>
+					<% } %>
+				</ul>
+
+				<div class="d-flex align-items-center">
+					<a href="/post/new" class="btn btn-outline-primary btn-sm me-3 d-none d-md-inline-block">
+						<i class="bi bi-plus-circle me-1"></i> Novo Post
+					</a>
+					<div class="dropdown">
+						<a href="#" class="d-block text-decoration-none dropdown-toggle" data-bs-toggle="dropdown">
+							<img src="<%= user.profilePicture ? '/uploads/profiles/' + user.profilePicture : '/images/default-profile.png' %>"
+								 alt="<%= user.username %>" width="38" height="38" class="user-avatar"
+								 onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 40 40%22><rect fill=%22%23d9e4da%22 width=%2240%22 height=%2240%22/><text x=%2220%22 y=%2226%22 font-family=%22serif%22 font-size=%2218%22 fill=%22%232b4e34%22 text-anchor=%22middle%22><%= user.username.charAt(0).toUpperCase() %></text></svg>'"/>
+						</a>
+						<ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-2">
+							<li class="px-3 py-2 text-muted small">@<%= user.username %></li>
+							<li><hr class="dropdown-divider"></li>
+							<li><a class="dropdown-item" href="/profile/edit"><i class="bi bi-person me-2"></i> Editar Perfil</a></li>
+							<li><a class="dropdown-item" href="/actions"><i class="bi bi-tree me-2"></i> Minhas Ações</a></li>
+							<li><a class="dropdown-item" href="/favorites"><i class="bi bi-star me-2"></i> Favoritos</a></li>
+							<li><hr class="dropdown-divider"></li>
+							<li><a class="dropdown-item text-danger" href="/logout"><i class="bi bi-box-arrow-right me-2"></i> Sair</a></li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+	</nav>
+<% } else { %>
+	<!-- Navbar visitante -->
+	<nav class="navbar navbar-expand-lg sticky-top shadow-sm">
+		<div class="container">
+			<a class="navbar-brand" href="/">
+				<span class="brand-dot"></span>Green <em style="font-style:italic;font-weight:300;">Life</em>
+			</a>
+			<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarVisit">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+			<div class="collapse navbar-collapse" id="navbarVisit">
+				<ul class="navbar-nav ms-auto align-items-center">
+					<li class="nav-item me-2"><a class="nav-link" href="/login">Entrar</a></li>
+					<li class="nav-item"><a class="btn btn-primary px-4" href="/register">Criar Conta</a></li>
+				</ul>
+			</div>
+		</div>
+	</nav>
+<% } %>

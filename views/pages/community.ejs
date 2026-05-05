@@ -1,0 +1,89 @@
+<div class="container-fluid px-lg-4">
+	<div class="row">
+		<%- include("../partials/sidebar") %>
+
+		<main class="col-12 col-md-9 col-lg-10 py-4">
+			<div class="d-flex justify-content-between align-items-end mb-4 flex-wrap gap-3">
+				<div>
+					<h1 class="display-5 fw-bold mb-1">
+						Posts da <em style="font-style:italic;color:var(--primary);font-weight:300;">comunidade</em>
+					</h1>
+					<p class="text-muted mb-0">Experiências, descobertas e conquistas compartilhadas.</p>
+				</div>
+				<% if (user) { %>
+					<a href="/post/new" class="btn btn-primary">
+						<i class="bi bi-plus-circle me-1"></i> Novo post
+					</a>
+				<% } %>
+			</div>
+
+			<!-- Fallback R-09: se não há posts, mostra dicas -->
+			<% if (isEmpty && fallbackTips && fallbackTips.length > 0) { %>
+				<div class="alert" style="background:var(--primary-pale); border:1px solid var(--primary);">
+					<h5 class="fw-bold mb-2"><i class="bi bi-info-circle me-2"></i>A comunidade ainda está começando!</h5>
+					<p class="mb-0">Enquanto ninguém postou, veja algumas dicas oficiais para inspirar sua primeira publicação:</p>
+				</div>
+				<div class="row g-3 mt-2">
+					<% fallbackTips.forEach(function(tip) { %>
+						<div class="col-md-6 col-lg-4">
+							<a href="/tip/<%= tip.id %>" class="text-decoration-none">
+								<div class="tip-card h-100 p-3">
+									<h6 class="fw-bold text-dark mb-2"><%= tip.title %></h6>
+									<% if (tip.summary) { %>
+										<p class="text-muted small mb-0"><%= tip.summary %></p>
+									<% } %>
+								</div>
+							</a>
+						</div>
+					<% }); %>
+				</div>
+			<% } %>
+
+			<!-- Lista de posts -->
+			<% if (posts && posts.length > 0) { %>
+				<% posts.forEach(function(post) { %>
+					<div class="tip-card p-3 mb-3">
+						<div class="row g-3 align-items-center">
+							<div class="col-auto">
+								<div class="post-avatar-circle">
+									<%= post.author.fullName.charAt(0).toUpperCase() %>
+								</div>
+							</div>
+							<div class="col">
+								<div class="small text-muted mb-1">
+									por <strong class="text-dark">@<%= post.author.username %></strong>
+									· <%= new Date(post.createdAt).toLocaleDateString('pt-BR') %>
+									<% if (post.isPrivate) { %>
+										<span class="badge bg-warning text-dark ms-2"><i class="bi bi-lock-fill"></i> Privado</span>
+									<% } %>
+								</div>
+								<h6 class="fw-bold mb-1">
+									<a href="/post/<%= post.id %>" class="text-decoration-none text-dark"><%= post.title %></a>
+								</h6>
+								<p class="text-muted mb-2" style="display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">
+									<%= post.content %>
+								</p>
+								<div class="d-flex gap-3 small text-muted">
+									<span><i class="bi bi-heart me-1"></i> <%= post.likes %></span>
+									<% if (post.category) { %>
+										<span class="cat-chip"><%= post.category.name %></span>
+									<% } %>
+								</div>
+							</div>
+							<div class="col-auto">
+								<a href="/post/<%= post.id %>" class="btn btn-outline-primary btn-sm">
+									Ver mais
+								</a>
+							</div>
+						</div>
+					</div>
+				<% }); %>
+			<% } else if (!isEmpty) { %>
+				<div class="text-center text-muted py-5">
+					<i class="bi bi-people display-4 d-block mb-3"></i>
+					Nenhum post encontrado.
+				</div>
+			<% } %>
+		</main>
+	</div>
+</div>

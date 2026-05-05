@@ -1,0 +1,52 @@
+<div class="container py-4" style="max-width:620px;">
+	<div class="profile-card p-4">
+		<h2 class="fw-bold text-center mb-4">Editar perfil</h2>
+		<form action="/profile/edit" method="POST" enctype="multipart/form-data">
+			<div class="text-center mb-4">
+				<img src="<%= user.profilePicture ? '/uploads/profiles/' + user.profilePicture : '/images/default-profile.png' %>"
+					alt="Foto de perfil" class="avatar-preview" id="profileImagePreview"
+					onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 120 120%22><rect fill=%22%23d9e4da%22 width=%22120%22 height=%22120%22/><text x=%2260%22 y=%2276%22 font-family=%22serif%22 font-size=%2254%22 fill=%22%232b4e34%22 text-anchor=%22middle%22><%= user.username.charAt(0).toUpperCase() %></text></svg>'"/>
+				<div class="mt-3">
+					<label for="profilePicture" class="btn btn-outline-primary btn-sm">
+						<i class="bi bi-camera me-1"></i> Alterar foto
+					</label>
+					<input type="file" id="profilePicture" name="profilePicture" accept="image/*" class="d-none" />
+					<small class="d-block text-muted mt-2">Até 4MB. JPG, PNG, GIF ou WEBP.</small>
+				</div>
+			</div>
+
+			<div class="mb-3">
+				<label class="form-label">Nome de usuário</label>
+				<input type="text" class="form-control" value="@<%= user.username %>" disabled />
+			</div>
+			<div class="mb-3">
+				<label class="form-label">E-mail</label>
+				<input type="text" class="form-control" value="<%= user.email %>" disabled />
+			</div>
+			<div class="mb-3">
+				<label class="form-label">Nome completo</label>
+				<input type="text" name="fullName" class="form-control" value="<%= user.fullName %>" required />
+			</div>
+			<div class="mb-3">
+				<label class="form-label">Bio</label>
+				<textarea name="bio" class="form-control" rows="3" maxlength="255"><%= user.bio || '' %></textarea>
+				<small class="text-muted">Até 255 caracteres.</small>
+			</div>
+
+			<div class="d-grid gap-2">
+				<button type="submit" class="btn btn-primary btn-lg">Salvar alterações</button>
+				<a href="/home" class="btn btn-outline-secondary">Cancelar</a>
+			</div>
+		</form>
+	</div>
+</div>
+
+<script>
+	document.getElementById('profilePicture').addEventListener('change', function(e) {
+		if (e.target.files && e.target.files[0]) {
+			const reader = new FileReader();
+			reader.onload = (ev) => document.getElementById('profileImagePreview').src = ev.target.result;
+			reader.readAsDataURL(e.target.files[0]);
+		}
+	});
+</script>

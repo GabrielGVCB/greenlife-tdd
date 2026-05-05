@@ -1,0 +1,66 @@
+<div class="container py-4">
+	<div class="d-flex justify-content-between align-items-center mb-4">
+		<h1 class="fw-bold mb-0">Categorias</h1>
+		<a href="/admin/dashboard" class="btn btn-outline-secondary btn-sm">← Dashboard</a>
+	</div>
+
+	<!-- Nova categoria -->
+	<div class="tip-card p-4 mb-4">
+		<h5 class="fw-bold mb-3">+ Nova categoria</h5>
+		<form action="/admin/categories" method="POST">
+			<div class="row g-3">
+				<div class="col-md-4">
+					<input type="text" name="name" class="form-control" placeholder="Nome (ex: Energia)" required />
+				</div>
+				<div class="col-md-3">
+					<input type="text" name="icon" class="form-control" placeholder="Ícone (bi-lightning-charge)" />
+				</div>
+				<div class="col-md-2">
+					<input type="color" name="color" class="form-control form-control-color" value="#3E6B4A" />
+				</div>
+				<div class="col-md-3">
+					<button type="submit" class="btn btn-primary w-100">Criar</button>
+				</div>
+				<div class="col-12">
+					<input type="text" name="description" class="form-control" placeholder="Descrição curta" />
+				</div>
+			</div>
+		</form>
+	</div>
+
+	<!-- Lista -->
+	<div class="tip-card p-0 overflow-hidden">
+		<table class="table mb-0">
+			<thead style="background: var(--bg-alt);">
+				<tr>
+					<th>Nome</th>
+					<th>Slug</th>
+					<th>Ícone</th>
+					<th class="text-end">Ações</th>
+				</tr>
+			</thead>
+			<tbody>
+				<% categories.forEach(function(c) { %>
+					<tr>
+						<td>
+							<span class="me-2" style="color: <%= c.color %>; font-size:1.2rem;">
+								<i class="bi <%= c.icon %>"></i>
+							</span>
+							<%= c.name %>
+						</td>
+						<td class="small text-muted"><%= c.slug %></td>
+						<td class="small text-muted"><%= c.icon %></td>
+						<td class="text-end">
+							<form action="/admin/categories/<%= c.id %>/delete" method="POST" class="d-inline">
+								<button type="submit" class="btn btn-sm btn-outline-danger"
+									onclick="return confirm('Excluir categoria?');">
+									<i class="bi bi-trash"></i>
+								</button>
+							</form>
+						</td>
+					</tr>
+				<% }); %>
+			</tbody>
+		</table>
+	</div>
+</div>

@@ -1,0 +1,46 @@
+<div class="container py-4" style="max-width:860px;">
+	<a href="/home" class="text-muted text-decoration-none small mb-3 d-inline-block">
+		<i class="bi bi-arrow-left me-1"></i> voltar
+	</a>
+
+	<article class="tip-card p-4">
+		<% if (tip.category) { %>
+			<span class="cat-chip mb-3"><%= tip.category.name %></span>
+		<% } %>
+		<h1 class="fw-bold mb-2"><%= tip.title %></h1>
+		<div class="small text-muted mb-4">
+			<i class="bi bi-clock me-1"></i> <%= tip.readTimeMinutes %> min de leitura
+			<% if (tip.impactKgCO2 > 0) { %>
+				· <i class="bi bi-cloud me-1"></i> economia estimada de <%= tip.impactKgCO2 %> kg CO₂
+			<% } %>
+		</div>
+
+		<% if (tip.image) { %>
+			<img src="/uploads/tips/<%= tip.image %>" alt="<%= tip.title %>"
+				class="img-fluid rounded mb-4" style="max-height:360px;">
+		<% } %>
+
+		<% if (tip.summary) { %>
+			<p class="lead text-muted"><%= tip.summary %></p>
+		<% } %>
+
+		<div style="white-space:pre-wrap; font-size:1.05rem; line-height:1.7; color:var(--ink-soft);">
+			<%= tip.content %>
+		</div>
+
+		<div class="mt-4 pt-3 d-flex gap-2" style="border-top:1px solid var(--line);">
+			<% if (user) { %>
+				<form action="/tip/<%= tip.id %>/favorite" method="POST">
+					<button type="submit" class="btn btn-outline-primary">
+						<i class="bi bi-star me-1"></i> Favoritar
+					</button>
+				</form>
+				<a href="/actions/new?tipId=<%= tip.id %>" class="btn btn-primary">
+					<i class="bi bi-check2-circle me-1"></i> Apliquei essa dica
+				</a>
+			<% } else { %>
+				<a href="/login" class="btn btn-primary">Entrar para salvar</a>
+			<% } %>
+		</div>
+	</article>
+</div>

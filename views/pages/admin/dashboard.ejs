@@ -1,0 +1,74 @@
+<div class="container py-4">
+	<div class="d-flex justify-content-between align-items-center mb-4">
+		<div>
+			<h1 class="display-6 fw-bold mb-0">
+				<i class="bi bi-shield-check me-2 text-primary-green"></i>Dashboard
+			</h1>
+			<p class="text-muted mb-0">Painel administrativo Green Life</p>
+		</div>
+		<div>
+			<a href="/admin/users" class="btn btn-outline-primary">Usuários</a>
+			<a href="/admin/tips" class="btn btn-outline-primary">Dicas</a>
+			<a href="/admin/categories" class="btn btn-outline-primary">Categorias</a>
+			<a href="/admin/posts" class="btn btn-outline-primary">Posts</a>
+		</div>
+	</div>
+
+	<div class="row g-3 mb-4">
+		<div class="col-md-6 col-lg-3">
+			<div class="tip-card p-3">
+				<small class="text-muted text-uppercase" style="letter-spacing:.1em;">Usuários</small>
+				<div class="fw-bold" style="font-family:'Fraunces',serif; font-size:2.2rem;">
+					<%= stats.totalUsers %>
+				</div>
+			</div>
+		</div>
+		<div class="col-md-6 col-lg-3">
+			<div class="tip-card p-3">
+				<small class="text-muted text-uppercase" style="letter-spacing:.1em;">Dicas oficiais</small>
+				<div class="fw-bold" style="font-family:'Fraunces',serif; font-size:2.2rem;">
+					<%= stats.totalTips %>
+				</div>
+			</div>
+		</div>
+		<div class="col-md-6 col-lg-3">
+			<div class="tip-card p-3">
+				<small class="text-muted text-uppercase" style="letter-spacing:.1em;">Posts da comunidade</small>
+				<div class="fw-bold" style="font-family:'Fraunces',serif; font-size:2.2rem;">
+					<%= stats.totalPosts %>
+				</div>
+			</div>
+		</div>
+		<div class="col-md-6 col-lg-3">
+			<div class="tip-card p-3">
+				<small class="text-muted text-uppercase" style="letter-spacing:.1em;">Comentários</small>
+				<div class="fw-bold" style="font-family:'Fraunces',serif; font-size:2.2rem;">
+					<%= stats.totalComments %>
+				</div>
+			</div>
+		</div>
+		<div class="col-md-6 col-lg-4">
+			<div class="tip-card p-3">
+				<small class="text-muted text-uppercase" style="letter-spacing:.1em;">Categorias</small>
+				<div class="fw-bold" style="font-family:'Fraunces',serif; font-size:2.2rem;">
+					<%= stats.totalCategories %>
+				</div>
+			</div>
+		</div>
+		<div class="col-md-6 col-lg-4">
+			<div class="tip-card p-3">
+				<small class="text-muted text-uppercase" style="letter-spacing:.1em;">Ações registradas</small>
+				<div class="fw-bold" style="font-family:'Fraunces',serif; font-size:2.2rem;">
+					<%= stats.totalActions %>
+				</div>
+			</div>
+		</div>
+		<div class="col-md-12 col-lg-4">
+			<div class="impact-box h-100">
+				<div class="label">Impacto total dos usuários</div>
+				<div class="val"><%= stats.totalImpact %><sup>kg CO₂</sup></div>
+				<p class="small mt-2 mb-0" style="opacity:.8;">Economizados pela comunidade inteira 🌍</p>
+			</div>
+		</div>
+	</div>
+</div>

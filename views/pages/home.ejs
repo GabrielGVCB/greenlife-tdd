@@ -1,0 +1,100 @@
+<div class="container-fluid px-lg-4">
+	<div class="row">
+		<%- include("../partials/sidebar") %>
+
+		<main class="col-12 col-md-9 col-lg-10 py-4">
+			<!-- Hero -->
+			<div class="d-flex justify-content-between align-items-end mb-4 flex-wrap gap-3">
+				<div>
+					<h1 class="display-5 fw-bold mb-1">
+						Aprenda práticas <em style="font-style:italic;color:var(--primary);font-weight:300;">sustentáveis</em>
+					</h1>
+					<p class="text-muted mb-0">Dicas curadas para transformar pequenas escolhas em grande impacto.</p>
+				</div>
+				<% if (user) { %>
+					<a href="/actions/new" class="btn btn-primary">
+						<i class="bi bi-plus-circle me-1"></i> Registrar ação
+					</a>
+				<% } %>
+			</div>
+
+			<!-- Stats -->
+			<% if (typeof stats !== 'undefined' && stats) { %>
+				<div class="stats-row">
+					<div class="stat-cell">
+						<div class="n"><%= stats.totalCategories %><sup>categorias</sup></div>
+						<div class="lbl">Para explorar</div>
+					</div>
+					<div class="stat-cell">
+						<div class="n"><%= stats.totalTips %><sup>dicas</sup></div>
+						<div class="lbl">Disponíveis</div>
+					</div>
+					<div class="stat-cell">
+						<div class="n">🌱<sup>sempre</sup></div>
+						<div class="lbl">Crescendo com você</div>
+					</div>
+				</div>
+			<% } %>
+
+			<!-- Categorias -->
+			<h4 class="fw-bold mt-5 mb-3">Categorias</h4>
+			<div class="row g-3 mb-5">
+				<% categories.forEach(function(cat) { %>
+					<div class="col-6 col-md-4 col-lg-3">
+						<a href="/category/<%= cat.slug %>" class="text-decoration-none">
+							<div class="tip-card h-100">
+								<div class="tip-thumb cat-<%= cat.slug %>">
+									<i class="bi <%= cat.icon || 'bi-leaf' %>"></i>
+								</div>
+								<div class="p-3">
+									<h6 class="mb-1"><%= cat.name %></h6>
+									<% if (cat.description) { %>
+										<p class="text-muted small mb-0"><%= cat.description %></p>
+									<% } %>
+								</div>
+							</div>
+						</a>
+					</div>
+				<% }); %>
+				<% if (categories.length === 0) { %>
+					<div class="col-12 text-center text-muted py-4">
+						<i class="bi bi-leaf display-5 mb-3 d-block"></i>
+						Nenhuma categoria cadastrada ainda.
+					</div>
+				<% } %>
+			</div>
+
+			<!-- Dicas recentes -->
+			<% if (tips && tips.length > 0) { %>
+				<h4 class="fw-bold mb-3">Dicas recentes</h4>
+				<div class="row g-3">
+					<% tips.slice(0, 8).forEach(function(tip) { %>
+						<div class="col-md-6 col-lg-4">
+							<a href="/tip/<%= tip.id %>" class="text-decoration-none">
+								<div class="tip-card h-100">
+									<div class="tip-thumb cat-<%= tip.category ? tip.category.slug : 'default' %>">
+										<i class="bi <%= tip.category && tip.category.icon ? tip.category.icon : 'bi-leaf' %>"></i>
+										<% if (tip.impactKgCO2 > 0) { %>
+											<span class="badge-impact">
+												-<%= tip.impactKgCO2 %> kg CO₂
+											</span>
+										<% } %>
+									</div>
+									<div class="p-3">
+										<% if (tip.category) { %>
+											<span class="cat-chip mb-2"><%= tip.category.name %></span>
+										<% } %>
+										<h6 class="mt-2 mb-1"><%= tip.title %></h6>
+										<% if (tip.summary) { %>
+											<p class="text-muted small mb-0"><%= tip.summary %></p>
+										<% } %>
+									</div>
+								</div>
+							</a>
+						</div>
+					<% }); %>
+				</div>
+			<% } %>
+		</main>
+	</div>
+</div>

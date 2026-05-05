@@ -1,0 +1,56 @@
+<div class="container py-4" style="max-width:720px;">
+	<a href="/community" class="text-muted text-decoration-none small mb-3 d-inline-block">
+		<i class="bi bi-arrow-left me-1"></i> voltar
+	</a>
+	<div class="tip-card p-4">
+		<h2 class="fw-bold mb-4">
+			<i class="bi bi-plus-circle me-2 text-primary-green"></i>
+			Novo post na comunidade
+		</h2>
+		<form action="/post/new" method="POST" enctype="multipart/form-data">
+			<div class="mb-3">
+				<label class="form-label">Título</label>
+				<input type="text" name="title" class="form-control" required maxlength="150"
+					placeholder="Ex: Troquei as lâmpadas e a conta caiu 22%" />
+			</div>
+
+			<div class="mb-3">
+				<label class="form-label">Categoria (opcional)</label>
+				<select name="categoryId" class="form-control">
+					<option value="">— Sem categoria —</option>
+					<% categories.forEach(function(c) { %>
+						<option value="<%= c.id %>"><%= c.name %></option>
+					<% }); %>
+				</select>
+			</div>
+
+			<div class="mb-3">
+				<label class="form-label">Conteúdo</label>
+				<textarea name="content" class="form-control" rows="8" required
+					minlength="10" maxlength="5000"
+					placeholder="Conte sua experiência, dica ou conquista..."></textarea>
+				<small class="text-muted">Entre 10 e 5.000 caracteres.</small>
+			</div>
+
+			<div class="mb-3">
+				<label class="form-label">Imagem (opcional)</label>
+				<input type="file" name="image" class="form-control" accept="image/*" />
+				<small class="text-muted">JPG, PNG, GIF ou WEBP até 4MB.</small>
+			</div>
+
+			<div class="form-check mb-4">
+				<input type="checkbox" name="isPrivate" id="isPrivate" class="form-check-input" value="true" />
+				<label for="isPrivate" class="form-check-label">
+					<i class="bi bi-lock me-1"></i> Post privado (só você verá)
+				</label>
+			</div>
+
+			<div class="d-flex gap-2">
+				<button type="submit" class="btn btn-primary btn-lg">
+					<i class="bi bi-send me-1"></i> Publicar
+				</button>
+				<a href="/community" class="btn btn-outline-secondary btn-lg">Cancelar</a>
+			</div>
+		</form>
+	</div>
+</div>

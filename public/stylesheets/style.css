@@ -1,0 +1,359 @@
+/* ===========================================================
+   Green Life — paleta de sustentabilidade
+   Variáveis do design system
+   =========================================================== */
+:root {
+	--bg: #f7f5ef;                  /* off-white quente */
+	--bg-alt: #efede4;
+	--paper: #ffffff;
+	--ink: #1a2e1f;                 /* verde quase preto */
+	--ink-soft: #3b4f40;
+	--muted: #6b7a6e;
+	--primary: #3e6b4a;             /* verde principal */
+	--primary-color: #3e6b4a;       /* alias bootstrap */
+	--primary-deep: #2b4e34;
+	--primary-bright: #5c8f68;
+	--primary-pale: #d9e4da;
+	--accent: #c9d98f;              /* verde folha nova */
+	--leaf: #8bb08f;
+	--line: #cfd4ca;
+	--danger: #b3434a;
+	--warning: #c48430;
+
+	--shadow-sm: 0 1px 2px rgba(26, 46, 31, 0.04);
+	--shadow: 0 1px 2px rgba(26, 46, 31, 0.04), 0 8px 24px rgba(26, 46, 31, 0.06);
+	--radius: 14px;
+}
+
+/* ===== Base ===== */
+body {
+	background-color: var(--bg);
+	color: var(--ink);
+	font-family: 'DM Sans', -apple-system, 'Segoe UI', sans-serif;
+	min-height: 100vh;
+	display: flex;
+	flex-direction: column;
+}
+
+h1, h2, h3, h4, h5, h6,
+.fw-bold, .display-3, .display-4 {
+	font-family: 'Fraunces', 'Georgia', serif;
+	letter-spacing: -0.015em;
+	color: var(--ink);
+}
+
+.text-muted { color: var(--muted) !important; }
+
+/* ===== Navbar ===== */
+.navbar {
+	background: var(--paper) !important;
+	border-bottom: 1px solid var(--line);
+}
+.navbar-brand {
+	font-family: 'Fraunces', serif;
+	font-weight: 600;
+	color: var(--primary) !important;
+	font-size: 1.4rem;
+	letter-spacing: -0.01em;
+}
+.navbar-brand .brand-dot {
+	display: inline-block;
+	width: 8px;
+	height: 8px;
+	background: var(--accent);
+	border-radius: 50%;
+	margin-right: 6px;
+	vertical-align: 3px;
+}
+.nav-link {
+	color: var(--ink-soft);
+	font-weight: 500;
+	padding: 10px 16px;
+	border-radius: 10px;
+	margin-bottom: 4px;
+	transition: all 0.2s ease;
+}
+.nav-link:hover, .nav-link.active {
+	background-color: var(--primary-pale);
+	color: var(--primary-deep);
+}
+
+.pfp-img { border-radius: 50%; }
+.user-avatar {
+	width: 40px; height: 40px;
+	border-radius: 50%;
+	object-fit: cover;
+	background-color: var(--primary-pale);
+}
+
+/* ===== Hero (landing) ===== */
+.hero-section {
+	background: linear-gradient(135deg, var(--ink) 0%, var(--primary-deep) 100%);
+	color: white;
+	padding: 100px 0 110px;
+	text-align: center;
+	position: relative;
+	overflow: hidden;
+}
+.hero-section::after {
+	content: "";
+	position: absolute;
+	right: -100px; bottom: -100px;
+	width: 380px; height: 380px;
+	border-radius: 50%;
+	background: radial-gradient(circle, var(--accent) 0%, transparent 70%);
+	opacity: 0.18;
+	pointer-events: none;
+}
+.hero-section h1 {
+	color: white;
+	font-size: clamp(2.2rem, 5vw, 3.5rem);
+}
+.hero-section h1 em {
+	font-style: italic;
+	color: var(--accent);
+	font-weight: 300;
+}
+
+/* ===== Botões ===== */
+.btn-primary {
+	background-color: var(--primary) !important;
+	border-color: var(--primary) !important;
+	padding: 11px;
+	font-weight: 500;
+	letter-spacing: 0.01em;
+}
+.btn-primary:hover, .btn-primary:focus {
+	background-color: var(--primary-deep) !important;
+	border-color: var(--primary-deep) !important;
+}
+.btn-outline-primary {
+	color: var(--primary) !important;
+	border-color: var(--primary) !important;
+}
+.btn-outline-primary:hover {
+	background-color: var(--primary) !important;
+	color: white !important;
+}
+.btn-outline-light {
+	color: var(--accent) !important;
+	border-color: rgba(255, 255, 255, 0.5) !important;
+}
+.btn-outline-light:hover {
+	background-color: var(--accent) !important;
+	color: var(--ink) !important;
+	border-color: var(--accent) !important;
+}
+
+/* ===== Cards ===== */
+.tip-card, .video-card, .post-card, .category-card {
+	border: 1px solid var(--line);
+	border-radius: var(--radius);
+	overflow: hidden;
+	transition: all 0.25s ease;
+	background: var(--paper);
+	box-shadow: var(--shadow-sm);
+	margin-bottom: 20px;
+}
+.tip-card:hover, .post-card:hover, .category-card:hover {
+	transform: translateY(-3px);
+	border-color: var(--primary);
+	box-shadow: var(--shadow);
+}
+
+/* Thumbnail das dicas */
+.tip-thumb {
+	height: 140px;
+	display: grid; place-items: center;
+	color: #fff;
+	font-size: 2.5rem;
+	background: linear-gradient(135deg, var(--primary-bright), var(--primary-deep));
+	position: relative;
+}
+.tip-thumb.cat-energia { background: linear-gradient(135deg, #e3a857, #c48430); }
+.tip-thumb.cat-agua, .tip-thumb.cat-água { background: linear-gradient(135deg, #5c9bb5, #2e6a85); }
+.tip-thumb.cat-reciclagem { background: linear-gradient(135deg, #6b8e4e, #3e6b4a); }
+.tip-thumb.cat-alimentacao, .tip-thumb.cat-alimentação { background: linear-gradient(135deg, #b46e50, #7a3f2b); }
+.tip-thumb.cat-transporte { background: linear-gradient(135deg, #7a6b9d, #4a3e70); }
+
+.badge-impact {
+	position: absolute;
+	bottom: 10px; left: 10px;
+	background: rgba(0, 0, 0, 0.6);
+	padding: 3px 10px;
+	border-radius: 20px;
+	font-size: 0.75rem;
+	color: white;
+}
+
+/* ===== Auth (login/register) ===== */
+.auth-card {
+	border: none;
+	border-radius: var(--radius);
+	box-shadow: 0 10px 40px rgba(26, 46, 31, 0.1);
+	overflow: hidden;
+	background: var(--paper);
+}
+.auth-header {
+	background: linear-gradient(135deg, var(--ink) 0%, var(--primary-deep) 100%);
+	color: white;
+	padding: 32px 30px;
+	text-align: center;
+	position: relative;
+	overflow: hidden;
+}
+.auth-header::after {
+	content: "";
+	position: absolute;
+	right: -50px; top: -50px;
+	width: 160px; height: 160px;
+	border-radius: 50%;
+	background: radial-gradient(circle, var(--accent) 0%, transparent 70%);
+	opacity: 0.2;
+}
+.auth-header h2 { color: white; position: relative; z-index: 2; }
+
+.form-control {
+	border-radius: 10px;
+	border: 1px solid var(--line);
+	padding: 11px 14px;
+}
+.form-control:focus {
+	border-color: var(--primary);
+	box-shadow: 0 0 0 0.2rem rgba(62, 107, 74, 0.2);
+}
+
+/* ===== Sidebar ===== */
+.sidebar {
+	background: var(--paper);
+	border-right: 1px solid var(--line);
+	height: calc(100vh - 56px);
+	position: sticky;
+	top: 56px;
+	padding-top: 20px;
+}
+
+/* ===== Perfil ===== */
+.profile-card {
+	border: none;
+	border-radius: var(--radius);
+	box-shadow: var(--shadow-sm);
+	background: var(--paper);
+}
+.avatar-preview {
+	width: 120px; height: 120px;
+	border-radius: 50%;
+	object-fit: cover;
+	border: 3px solid var(--paper);
+	box-shadow: 0 2px 12px rgba(26, 46, 31, 0.12);
+	background-color: var(--primary-pale);
+}
+
+/* ===== Stats (dashboard/home) ===== */
+.stats-row {
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	gap: 0;
+	border-top: 1px solid var(--line);
+	border-bottom: 1px solid var(--line);
+	margin-bottom: 30px;
+}
+.stat-cell {
+	padding: 20px 24px;
+	border-right: 1px solid var(--line);
+}
+.stat-cell:last-child { border-right: none; }
+.stat-cell .n {
+	font-family: 'Fraunces', serif;
+	font-size: 2rem;
+	color: var(--ink);
+}
+.stat-cell .n sup {
+	font-size: 0.9rem;
+	color: var(--primary);
+	font-weight: 500;
+	margin-left: 3px;
+}
+.stat-cell .lbl {
+	font-size: 0.75rem;
+	color: var(--muted);
+	text-transform: uppercase;
+	letter-spacing: 0.12em;
+	margin-top: 4px;
+}
+
+/* ===== Impact box ===== */
+.impact-box {
+	background: linear-gradient(135deg, var(--ink), var(--primary-deep));
+	color: var(--bg);
+	border-radius: var(--radius);
+	padding: 24px;
+	position: relative;
+	overflow: hidden;
+}
+.impact-box .label {
+	font-size: 0.7rem;
+	letter-spacing: 0.15em;
+	text-transform: uppercase;
+	opacity: 0.75;
+	margin-bottom: 10px;
+}
+.impact-box .val {
+	font-family: 'Fraunces', serif;
+	font-size: 2.2rem;
+	line-height: 1;
+}
+.impact-box .val sup {
+	font-size: 0.9rem;
+	color: var(--accent);
+	margin-left: 4px;
+}
+
+/* ===== Categoria chips ===== */
+.cat-chip {
+	display: inline-block;
+	padding: 5px 14px;
+	border-radius: 999px;
+	background: var(--primary-pale);
+	color: var(--primary-deep);
+	font-size: 0.78rem;
+	font-weight: 500;
+	margin-right: 6px;
+}
+
+/* ===== Post da comunidade ===== */
+.post-avatar-circle {
+	width: 48px; height: 48px;
+	border-radius: 50%;
+	background: linear-gradient(135deg, var(--leaf), var(--primary-deep));
+	color: white;
+	display: grid; place-items: center;
+	font-family: 'Fraunces', serif;
+	font-size: 1.2rem;
+	font-weight: 500;
+}
+
+/* ===== Alerts Bootstrap overrides ===== */
+.alert-success {
+	background-color: var(--primary-pale);
+	color: var(--primary-deep);
+	border-color: var(--primary);
+}
+.alert-danger {
+	background-color: #fdecec;
+	color: var(--danger);
+	border-color: var(--danger);
+}
+
+/* ===== Footer ===== */
+footer {
+	margin-top: auto;
+	background: var(--ink) !important;
+	color: var(--bg) !important;
+}
+footer a { color: var(--accent); }
+
+/* ===== Utilidades ===== */
+.text-primary-green { color: var(--primary) !important; }
+.bg-leaf { background: var(--primary-pale); }
+.border-leaf { border-color: var(--primary) !important; }

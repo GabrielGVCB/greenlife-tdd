@@ -1,0 +1,113 @@
+<div class="container py-4" style="max-width:860px;">
+	<!-- Voltar -->
+	<a href="/community" class="text-muted text-decoration-none small mb-3 d-inline-block">
+		<i class="bi bi-arrow-left me-1"></i> voltar para comunidade
+	</a>
+
+	<!-- Post -->
+	<article class="tip-card p-4 mb-4">
+		<div class="d-flex gap-3 align-items-center mb-3">
+			<div class="post-avatar-circle">
+				<%= post.author.fullName.charAt(0).toUpperCase() %>
+			</div>
+			<div>
+				<strong>@<%= post.author.username %></strong>
+				<div class="small text-muted">
+					<%= new Date(post.createdAt).toLocaleString('pt-BR') %>
+					<% if (post.isPrivate) { %>
+						<span class="badge bg-warning text-dark ms-2"><i class="bi bi-lock-fill"></i> Privado</span>
+					<% } %>
+				</div>
+			</div>
+			<% if (user && (user.id === post.author.id || user.role === 'admin')) { %>
+				<form action="/post/<%= post.id %>/delete" method="POST" class="ms-auto">
+					<button type="submit" class="btn btn-sm btn-outline-danger"
+						onclick="return confirm('Excluir este post?');">
+						<i class="bi bi-trash"></i>
+					</button>
+				</form>
+			<% } %>
+		</div>
+
+		<h1 class="fw-bold mb-3"><%= post.title %></h1>
+
+		<% if (post.category) { %>
+			<span class="cat-chip mb-3"><%= post.category.name %></span>
+		<% } %>
+
+		<% if (post.image) { %>
+			<img src="/uploads/posts/<%= post.image %>" alt="imagem"
+				class="img-fluid rounded my-3" style="max-height:420px;">
+		<% } %>
+
+		<!-- CONTEÚDO: <%= %> escapa HTML automaticamente → defesa principal contra R-07 XSS -->
+		<div style="white-space:pre-wrap; font-size:1.05rem; line-height:1.65; color:var(--ink-soft);">
+			<%= post.content %>
+		</div>
+
+		<!-- Ações -->
+		<div class="d-flex gap-2 mt-4 pt-3" style="border-top:1px solid var(--line);">
+			<% if (user) { %>
+				<form action="/post/<%= post.id %>/like" method="POST" class="d-inline">
+					<button type="submit" class="btn btn-outline-primary btn-sm">
+						<i class="bi bi-heart me-1"></i> Curtir (<%= likes %>)
+					</button>
+				</form>
+			<% } else { %>
+				<span class="btn btn-sm btn-light" style="cursor:default;">
+					<i class="bi bi-heart me-1"></i> <%= likes %> curtidas
+				</span>
+			<% } %>
+		</div>
+	</article>
+
+	<!-- Comentários -->
+	<section>
+		<h4 class="fw-bold mb-3">
+			<i class="bi bi-chat-dots me-1"></i>
+			Comentários (<%= comments.length %>)
+		</h4>
+
+		<% if (user) { %>
+			<form action="/post/<%= post.id %>/comment" method="POST" class="mb-4">
+				<div class="mb-2">
+					<textarea name="text" class="form-control" rows="3" maxlength="500"
+						placeholder="Compartilhe sua opinião..." required></textarea>
+				</div>
+				<button type="submit" class="btn btn-primary">
+					<i class="bi bi-send me-1"></i> Comentar
+				</button>
+			</form>
+		<% } else { %>
+			<div class="alert alert-light border">
+				<a href="/login" class="text-primary-green fw-bold">Faça login</a> para comentar.
+			</div>
+		<% } %>
+
+		<% if (comments.length > 0) { %>
+			<% comments.forEach(function(c) { %>
+				<div class="d-flex gap-2 mb-3 pb-3" style="border-bottom:1px solid var(--line);">
+					<div class="post-avatar-circle" style="width:36px; height:36px; font-size:.9rem;">
+						<%= c.author.fullName.charAt(0).toUpperCase() %>
+					</div>
+					<div class="flex-grow-1">
+						<strong>@<%= c.author.username %></strong>
+						<small class="text-muted ms-2"><%= new Date(c.createdAt).toLocaleString('pt-BR') %></small>
+						<!-- CRÍTICO R-07: <%= %> escapa HTML, nunca usar <%- %> aqui! -->
+						<p class="mb-0" style="white-space:pre-wrap;"><%= c.text %></p>
+					</div>
+					<% if (user && (user.id === c.userId || user.role === 'admin')) { %>
+						<form action="/comment/<%= c.id %>/delete" method="POST">
+							<button type="submit" class="btn btn-sm btn-link text-muted"
+								onclick="return confirm('Excluir comentário?');">
+								<i class="bi bi-trash"></i>
+							</button>
+						</form>
+					<% } %>
+				</div>
+			<% }); %>
+		<% } else { %>
+			<p class="text-muted text-center py-3">Seja o primeiro a comentar!</p>
+		<% } %>
+	</section>
+</div>
