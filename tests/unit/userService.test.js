@@ -6,27 +6,25 @@
  *  - R-04 (email inválido)
  *  - R-11 (senha curta)
  *
- * Os Models são mockados para isolar a lógica do service.
+ * Usa createRequire para acessar o mesmo cache CJS que o service usa internamente,
+ * garantindo que vi.spyOn intercepte as chamadas reais do service.
  */
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import bcrypt from 'bcrypt';
+import { createRequire } from 'module';
 
-// Mocka o model do User
-vi.mock('../../modules/user/userModel.js', () => ({
-	default: {
-		findOne: vi.fn(),
-		create: vi.fn()
-	}
-}));
-
-const User = (await import('../../modules/user/userModel.js')).default;
-const userService = await import('../../modules/user/userService.js');
+const cjsRequire = createRequire(import.meta.url);
+const User = cjsRequire('../../modules/user/userModel');
+const userService = cjsRequire('../../modules/user/userService');
 
 describe('userService.createUser', () => {
 	beforeEach(() => {
-		vi.clearAllMocks();
-		User.findOne.mockResolvedValue(null); // nenhum usuário duplicado por padrão
-		User.create.mockImplementation((data) => Promise.resolve({ id: 1, ...data }));
+		vi.spyOn(User, 'findOne').mockResolvedValue(null);
+		vi.spyOn(User, 'create').mockImplementation((data) => Promise.resolve({ id: 1, ...data }));
+	});
+
+	afterEach(() => {
+		vi.restoreAllMocks();
 	});
 
 	it('[R-01] NUNCA salva senha em texto plano', async () => {
