@@ -1,9 +1,10 @@
-const express = require('express');
+import express from 'express';
+import * as controller from './categoryController.js';
+
 const router = express.Router();
-const controller = require('./categoryController');
 
 // Públicas
 router.get('/home', controller.showHome);
 router.get('/category/:slug', controller.showCategory);
 
-module.exports = router;
+export default router;

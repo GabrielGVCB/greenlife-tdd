@@ -7,7 +7,6 @@
  *  - R-08 (conteúdo muito longo)
  *  - R-07 (sanitização XSS)
  */
-import { describe, it, expect } from 'vitest';
 import {
 	isValidEmail,
 	isValidPassword,
@@ -44,7 +43,6 @@ describe('isValidEmail (R-04)', () => {
 });
 
 describe('isValidPassword (R-11)', () => {
-	// Análise de Valor-Limite
 	it('rejeita senha com 7 chars (abaixo do mínimo)', () => {
 		expect(isValidPassword('1234567').valid).toBe(false);
 	});

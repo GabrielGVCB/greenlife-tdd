@@ -1,8 +1,9 @@
-const express = require('express');
+import express from 'express';
+import * as controller from './likeController.js';
+import auth from '../../middlewares/auth.js';
+
 const router = express.Router();
-const controller = require('./likeController');
-const auth = require('../../middlewares/auth');
 
 router.post('/post/:postId/like', auth, controller.toggle);
 
-module.exports = router;
+export default router;

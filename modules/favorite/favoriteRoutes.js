@@ -1,9 +1,10 @@
-const express = require('express');
+import express from 'express';
+import * as controller from './favoriteController.js';
+import auth from '../../middlewares/auth.js';
+
 const router = express.Router();
-const controller = require('./favoriteController');
-const auth = require('../../middlewares/auth');
 
 router.get('/favorites', auth, controller.list);
 router.post('/tip/:tipId/favorite', auth, controller.toggle);
 
-module.exports = router;
+export default router;

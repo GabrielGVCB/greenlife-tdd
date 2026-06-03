@@ -1,6 +1,6 @@
-const commentService = require('./commentService');
+import * as commentService from './commentService.js';
 
-exports.create = async (req, res) => {
+export const create = async (req, res) => {
 	try {
 		const result = await commentService.create({
 			text: req.body.text,
@@ -20,7 +20,7 @@ exports.create = async (req, res) => {
 	}
 };
 
-exports.delete = async (req, res) => {
+export const deleteComment = async (req, res) => {
 	const isAdmin = req.session.user.role === 'admin';
 	const result = await commentService.remove(req.params.id, req.session.user.id, isAdmin);
 	if (!result.ok) req.flash('error', result.error);

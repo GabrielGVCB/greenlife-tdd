@@ -1,9 +1,10 @@
-const express = require('express');
+import express from 'express';
+import * as controller from './postController.js';
+import auth from '../../middlewares/auth.js';
+import { postUpload } from '../../middlewares/multer.js';
+import uploadErrorHandler from '../../middlewares/uploadErrorHandler.js';
+
 const router = express.Router();
-const controller = require('./postController');
-const auth = require('../../middlewares/auth');
-const { postUpload } = require('../../middlewares/multer');
-const uploadErrorHandler = require('../../middlewares/uploadErrorHandler');
 
 router.get('/community', controller.community);
 router.get('/post/new', auth, controller.showNew);
@@ -15,6 +16,6 @@ router.post(
 	controller.create
 );
 router.get('/post/:id', controller.show);
-router.post('/post/:id/delete', auth, controller.delete);
+router.post('/post/:id/delete', auth, controller.deletePost);
 
-module.exports = router;
+export default router;

@@ -1,9 +1,9 @@
-const { Op } = require('sequelize');
-const Post = require('./postModel');
-const User = require('../user/userModel');
-const Category = require('../category/categoryModel');
-const Like = require('../like/likeModel');
-const { isValidContent } = require('../../middlewares/validators');
+import { Op } from 'sequelize';
+import Post from './postModel.js';
+import User from '../user/userModel.js';
+import Category from '../category/categoryModel.js';
+import Like from '../like/likeModel.js';
+import { isValidContent } from '../../middlewares/validators.js';
 
 /**
  * Lista posts visíveis para um determinado viewer.
@@ -140,13 +140,4 @@ async function count() {
 	return Post.count();
 }
 
-module.exports = {
-	listVisible,
-	listByCategory,
-	findVisibleById,
-	create,
-	update,
-	remove,
-	countLikes,
-	count
-};
+export { listVisible, listByCategory, findVisibleById, create, update, remove, countLikes, count };

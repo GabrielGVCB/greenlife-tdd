@@ -1,7 +1,7 @@
-const Tip = require('./tipModel');
-const Category = require('../category/categoryModel');
-const User = require('../user/userModel');
-const { isValidContent } = require('../../middlewares/validators');
+import Tip from './tipModel.js';
+import Category from '../category/categoryModel.js';
+import User from '../user/userModel.js';
+import { isValidContent } from '../../middlewares/validators.js';
 
 async function listAll(opts = {}) {
 	const { limit = 50, offset = 0 } = opts;
@@ -102,12 +102,4 @@ async function count() {
 	return Tip.count();
 }
 
-module.exports = {
-	listAll,
-	listByCategory,
-	findById,
-	create,
-	update,
-	remove,
-	count
-};
+export { listAll, listByCategory, findById, create, update, remove, count };

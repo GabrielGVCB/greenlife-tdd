@@ -1,9 +1,9 @@
-const User = require('../user/userModel');
-const Tip = require('../tip/tipModel');
-const Post = require('../post/postModel');
-const Comment = require('../comment/commentModel');
-const Action = require('../action/actionModel');
-const Category = require('../category/categoryModel');
+import User from '../user/userModel.js';
+import Tip from '../tip/tipModel.js';
+import Post from '../post/postModel.js';
+import Comment from '../comment/commentModel.js';
+import Action from '../action/actionModel.js';
+import Category from '../category/categoryModel.js';
 
 /**
  * Retorna as estatísticas do Dashboard administrativo.
@@ -61,10 +61,4 @@ async function listAllPosts() {
 	});
 }
 
-module.exports = {
-	getDashboardStats,
-	listUsers,
-	toggleUserRole,
-	deleteUser,
-	listAllPosts
-};
+export { getDashboardStats, listUsers, toggleUserRole, deleteUser, listAllPosts };

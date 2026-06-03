@@ -1,6 +1,6 @@
-const Favorite = require('./favoriteModel');
-const Tip = require('../tip/tipModel');
-const Category = require('../category/categoryModel');
+import Favorite from './favoriteModel.js';
+import Tip from '../tip/tipModel.js';
+import Category from '../category/categoryModel.js';
 
 /**
  * Toggle favorito (mesma lógica anti-duplicata que Like → R-05).
@@ -41,8 +41,4 @@ async function isFavorited(userId, tipId) {
 	return !!f;
 }
 
-module.exports = {
-	toggle,
-	listByUser,
-	isFavorited
-};
+export { toggle, listByUser, isFavorited };

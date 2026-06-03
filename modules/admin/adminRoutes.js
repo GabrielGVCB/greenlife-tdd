@@ -1,12 +1,13 @@
-const express = require('express');
+import express from 'express';
+import * as adminController from './adminController.js';
+import * as categoryController from '../category/categoryController.js';
+import * as tipController from '../tip/tipController.js';
+import * as postController from '../post/postController.js';
+import adminAuth from '../../middlewares/adminAuth.js';
+import { tipUpload } from '../../middlewares/multer.js';
+import uploadErrorHandler from '../../middlewares/uploadErrorHandler.js';
+
 const router = express.Router();
-const adminController = require('./adminController');
-const categoryController = require('../category/categoryController');
-const tipController = require('../tip/tipController');
-const postController = require('../post/postController');
-const adminAuth = require('../../middlewares/adminAuth');
-const { tipUpload } = require('../../middlewares/multer');
-const uploadErrorHandler = require('../../middlewares/uploadErrorHandler');
 
 // ===== Proteção global para TUDO que começa com /admin =====
 // (Cobre Risco R-06: rota admin exposta)
@@ -47,6 +48,6 @@ router.post('/tips/:id/delete', tipController.adminDelete);
 
 // Posts (moderação)
 router.get('/posts', adminController.posts);
-router.post('/posts/:id/delete', postController.delete);
+router.post('/posts/:id/delete', postController.deletePost);
 
-module.exports = router;
+export default router;

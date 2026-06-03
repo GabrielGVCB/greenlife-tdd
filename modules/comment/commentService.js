@@ -1,5 +1,5 @@
-const Comment = require('./commentModel');
-const Post = require('../post/postModel');
+import Comment from './commentModel.js';
+import Post from '../post/postModel.js';
 
 /**
  * Cria um comentário em um post.
@@ -45,7 +45,4 @@ async function remove(id, userId, isAdmin = false) {
 	return { ok: true };
 }
 
-module.exports = {
-	create,
-	remove
-};
+export { create, remove };

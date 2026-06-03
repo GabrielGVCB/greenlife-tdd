@@ -1,10 +1,10 @@
-const tipService = require('./tipService');
-const categoryService = require('../category/categoryService');
+import * as tipService from './tipService.js';
+import * as categoryService from '../category/categoryService.js';
 
 /**
  * GET /tip/:id - detalhe de uma dica
  */
-exports.show = async (req, res) => {
+export const show = async (req, res) => {
 	try {
 		const tip = await tipService.findById(req.params.id);
 		if (!tip) {
@@ -26,7 +26,7 @@ exports.show = async (req, res) => {
 
 // === ADMIN ===
 
-exports.adminList = async (req, res) => {
+export const adminList = async (req, res) => {
 	const tips = await tipService.listAll();
 	res.render('admin/tips', {
 		title: 'Gerenciar dicas - Admin',
@@ -34,7 +34,7 @@ exports.adminList = async (req, res) => {
 	});
 };
 
-exports.adminNew = async (req, res) => {
+export const adminNew = async (req, res) => {
 	const categories = await categoryService.listAll();
 	res.render('admin/tip-form', {
 		title: 'Nova dica - Admin',
@@ -43,7 +43,7 @@ exports.adminNew = async (req, res) => {
 	});
 };
 
-exports.adminCreate = async (req, res) => {
+export const adminCreate = async (req, res) => {
 	try {
 		const data = {
 			...req.body,
@@ -64,7 +64,7 @@ exports.adminCreate = async (req, res) => {
 	}
 };
 
-exports.adminEdit = async (req, res) => {
+export const adminEdit = async (req, res) => {
 	const tip = await tipService.findById(req.params.id);
 	const categories = await categoryService.listAll();
 	if (!tip) return res.redirect('/admin/tips');
@@ -75,7 +75,7 @@ exports.adminEdit = async (req, res) => {
 	});
 };
 
-exports.adminUpdate = async (req, res) => {
+export const adminUpdate = async (req, res) => {
 	try {
 		const data = { ...req.body };
 		if (req.file) data.image = req.file.filename;
@@ -93,7 +93,7 @@ exports.adminUpdate = async (req, res) => {
 	}
 };
 
-exports.adminDelete = async (req, res) => {
+export const adminDelete = async (req, res) => {
 	const result = await tipService.remove(req.params.id);
 	if (!result.ok) req.flash('error', result.error);
 	else req.flash('success', 'Dica removida.');

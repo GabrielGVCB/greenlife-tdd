@@ -1,8 +1,8 @@
-const postService = require('./postService');
-const tipService = require('../tip/tipService');
-const categoryService = require('../category/categoryService');
-const Comment = require('../comment/commentModel');
-const User = require('../user/userModel');
+import * as postService from './postService.js';
+import * as tipService from '../tip/tipService.js';
+import * as categoryService from '../category/categoryService.js';
+import Comment from '../comment/commentModel.js';
+import User from '../user/userModel.js';
 
 /**
  * GET /community → feed da comunidade.
@@ -10,7 +10,7 @@ const User = require('../user/userModel');
  * Cobre R-09 (fallback): se não houver posts visíveis, mostra dicas oficiais
  * em vez de tela vazia.
  */
-exports.community = async (req, res) => {
+export const community = async (req, res) => {
 	try {
 		const viewerId = req.session.user ? req.session.user.id : null;
 		const posts = await postService.listVisible({ viewerId, limit: 30 });
@@ -50,7 +50,7 @@ exports.community = async (req, res) => {
  * GET /post/:id - detalhe do post + comentários
  * Cobre R-12 (não exibir privado se viewer != dono)
  */
-exports.show = async (req, res) => {
+export const show = async (req, res) => {
 	try {
 		const viewerId = req.session.user ? req.session.user.id : null;
 		const post = await postService.findVisibleById(req.params.id, viewerId);
@@ -85,7 +85,7 @@ exports.show = async (req, res) => {
 	}
 };
 
-exports.showNew = async (req, res) => {
+export const showNew = async (req, res) => {
 	const categories = await categoryService.listAll();
 	res.render('post-form', {
 		title: 'Novo post - Green Life',
@@ -94,7 +94,7 @@ exports.showNew = async (req, res) => {
 	});
 };
 
-exports.create = async (req, res) => {
+export const create = async (req, res) => {
 	try {
 		const data = {
 			...req.body,
@@ -115,7 +115,7 @@ exports.create = async (req, res) => {
 	}
 };
 
-exports.delete = async (req, res) => {
+export const deletePost = async (req, res) => {
 	const isAdmin = req.session.user.role === 'admin';
 	const result = await postService.remove(req.params.id, req.session.user.id, isAdmin);
 	if (!result.ok) req.flash('error', result.error);

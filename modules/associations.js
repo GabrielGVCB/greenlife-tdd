@@ -2,14 +2,14 @@
  * Centraliza todas as associações entre Models.
  * Importado uma única vez em app.js depois de todos os models.
  */
-const User = require('./user/userModel');
-const Category = require('./category/categoryModel');
-const Tip = require('./tip/tipModel');
-const Post = require('./post/postModel');
-const Comment = require('./comment/commentModel');
-const Like = require('./like/likeModel');
-const Action = require('./action/actionModel');
-const Favorite = require('./favorite/favoriteModel');
+import User from './user/userModel.js';
+import Category from './category/categoryModel.js';
+import Tip from './tip/tipModel.js';
+import Post from './post/postModel.js';
+import Comment from './comment/commentModel.js';
+import Like from './like/likeModel.js';
+import Action from './action/actionModel.js';
+import Favorite from './favorite/favoriteModel.js';
 
 // =============== Category 1:N Tip / Post / Action ===============
 Category.hasMany(Tip, { foreignKey: 'categoryId', as: 'tips' });
@@ -53,13 +53,4 @@ Tip.belongsToMany(User, { through: Favorite, foreignKey: 'tipId', as: 'favorited
 Tip.hasMany(Action, { foreignKey: 'tipId', as: 'actions' });
 Action.belongsTo(Tip, { foreignKey: 'tipId', as: 'tip' });
 
-module.exports = {
-	User,
-	Category,
-	Tip,
-	Post,
-	Comment,
-	Like,
-	Action,
-	Favorite
-};
+export { User, Category, Tip, Post, Comment, Like, Action, Favorite };

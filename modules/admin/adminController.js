@@ -1,6 +1,6 @@
-const adminService = require('./adminService');
+import * as adminService from './adminService.js';
 
-exports.dashboard = async (req, res) => {
+export const dashboard = async (req, res) => {
 	try {
 		const stats = await adminService.getDashboardStats();
 		res.render('admin/dashboard', {
@@ -14,7 +14,7 @@ exports.dashboard = async (req, res) => {
 	}
 };
 
-exports.users = async (req, res) => {
+export const users = async (req, res) => {
 	const users = await adminService.listUsers();
 	res.render('admin/users', {
 		title: 'Usuários - Admin',
@@ -22,14 +22,14 @@ exports.users = async (req, res) => {
 	});
 };
 
-exports.toggleRole = async (req, res) => {
+export const toggleRole = async (req, res) => {
 	const result = await adminService.toggleUserRole(req.params.id);
 	if (!result.ok) req.flash('error', result.error);
 	else req.flash('success', `Role alterada para ${result.user.role}.`);
 	res.redirect('/admin/users');
 };
 
-exports.deleteUser = async (req, res) => {
+export const deleteUser = async (req, res) => {
 	// Evita auto-banimento
 	if (parseInt(req.params.id) === req.session.user.id) {
 		req.flash('error', 'Você não pode excluir a si mesmo.');
@@ -41,7 +41,7 @@ exports.deleteUser = async (req, res) => {
 	res.redirect('/admin/users');
 };
 
-exports.posts = async (req, res) => {
+export const posts = async (req, res) => {
 	const posts = await adminService.listAllPosts();
 	res.render('admin/posts', {
 		title: 'Moderação de posts - Admin',

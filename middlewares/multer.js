@@ -1,19 +1,6 @@
-const multer = require('multer');
-const path = require('path');
+import multer from 'multer';
+import path from 'path';
 
-/**
- * Factory de upload de imagens.
- * Cobre os riscos:
- *  - R-02: Upload aceitando .exe (filtra por mimetype + extensão)
- *  - R-10: Erro silencioso em arquivo gigante (limite explícito + erro JSON legível)
- *
- * Regra de negócio (Particionamento + Valor-Limite):
- *  - Formato válido: image/jpeg, image/png, image/gif, image/webp
- *  - Tamanho: até 4MB (RN-003)
- *
- * @param {string} subfolder - subpasta dentro de public/uploads (ex: 'profiles', 'tips', 'posts')
- * @param {string} filenamePrefix - prefixo do arquivo gerado (ex: 'profile', 'tip')
- */
 function createImageUpload(subfolder, filenamePrefix) {
 	const storage = multer.diskStorage({
 		destination: (req, file, cb) => {
@@ -29,7 +16,6 @@ function createImageUpload(subfolder, filenamePrefix) {
 		}
 	});
 
-	// Filtro de tipos aceitos (apenas imagens reais)
 	const ALLOWED_MIMETYPES = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
 	const ALLOWED_EXTENSIONS = ['.jpg', '.jpeg', '.png', '.gif', '.webp'];
 
@@ -41,7 +27,6 @@ function createImageUpload(subfolder, filenamePrefix) {
 		if (mimeOk && extOk) {
 			return cb(null, true);
 		}
-		// Erro descritivo (não silencioso) — cobre R-10
 		const err = new Error('Tipo de arquivo não suportado. Envie JPG, PNG, GIF ou WEBP.');
 		err.code = 'INVALID_FILE_TYPE';
 		err.status = 400;
@@ -51,18 +36,11 @@ function createImageUpload(subfolder, filenamePrefix) {
 	return multer({
 		storage,
 		fileFilter,
-		limits: { fileSize: 4 * 1024 * 1024 } // 4MB - RN-003
+		limits: { fileSize: 4 * 1024 * 1024 }
 	});
 }
 
-// Instâncias prontas para uso
-const profileUpload = createImageUpload('profiles', 'profile');
-const tipUpload = createImageUpload('tips', 'tip');
-const postUpload = createImageUpload('posts', 'post');
-
-module.exports = {
-	createImageUpload,
-	profileUpload,
-	tipUpload,
-	postUpload
-};
+export const profileUpload = createImageUpload('profiles', 'profile');
+export const tipUpload = createImageUpload('tips', 'tip');
+export const postUpload = createImageUpload('posts', 'post');
+export { createImageUpload };

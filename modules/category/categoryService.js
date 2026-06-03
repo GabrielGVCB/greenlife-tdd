@@ -1,4 +1,4 @@
-const Category = require('./categoryModel');
+import Category from './categoryModel.js';
 
 /**
  * Gera slug a partir do nome (ex: "Energia em Casa" → "energia-em-casa")
@@ -8,7 +8,7 @@ function slugify(text) {
 		.toString()
 		.toLowerCase()
 		.normalize('NFD')
-		.replace(/[\u0300-\u036f]/g, '')
+		.replace(/[̀-ͯ]/g, '')
 		.replace(/[^a-z0-9\s-]/g, '')
 		.trim()
 		.replace(/\s+/g, '-');
@@ -69,12 +69,4 @@ async function remove(id) {
 	return { ok: true };
 }
 
-module.exports = {
-	slugify,
-	listAll,
-	findBySlug,
-	findById,
-	create,
-	update,
-	remove
-};
+export { slugify, listAll, findBySlug, findById, create, update, remove };

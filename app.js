@@ -1,29 +1,41 @@
-require('dotenv').config();
+import 'dotenv/config';
+import createError from 'http-errors';
+import express from 'express';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import cookieParser from 'cookie-parser';
+import logger from 'morgan';
+import flash from 'connect-flash';
+import session from 'express-session';
+import expressLayouts from 'express-ejs-layouts';
 
-var createError = require('http-errors');
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
-const flash = require('connect-flash');
-const session = require('express-session');
-var expressLayouts = require('express-ejs-layouts');
+import indexRouter from './routes/index.js';
+import userRouter from './modules/user/userRoutes.js';
+import categoryRouter from './modules/category/categoryRoutes.js';
+import tipRouter from './modules/tip/tipRoutes.js';
+import postRouter from './modules/post/postRoutes.js';
+import commentRouter from './modules/comment/commentRoutes.js';
+import likeRouter from './modules/like/likeRoutes.js';
+import actionRouter from './modules/action/actionRoutes.js';
+import favoriteRouter from './modules/favorite/favoriteRoutes.js';
+import adminRouter from './modules/admin/adminRoutes.js';
 
-// Routers
-var indexRouter = require('./routes/index');
-var userRouter = require('./modules/user/userRoutes');
-var categoryRouter = require('./modules/category/categoryRoutes');
-var tipRouter = require('./modules/tip/tipRoutes');
-var postRouter = require('./modules/post/postRoutes');
-var commentRouter = require('./modules/comment/commentRoutes');
-var likeRouter = require('./modules/like/likeRoutes');
-var actionRouter = require('./modules/action/actionRoutes');
-var favoriteRouter = require('./modules/favorite/favoriteRoutes');
-var adminRouter = require('./modules/admin/adminRoutes');
+import sequelize from './config/database.js';
+import './modules/user/userModel.js';
+import './modules/category/categoryModel.js';
+import './modules/tip/tipModel.js';
+import './modules/post/postModel.js';
+import './modules/comment/commentModel.js';
+import './modules/like/likeModel.js';
+import './modules/action/actionModel.js';
+import './modules/favorite/favoriteModel.js';
+import './modules/associations.js';
 
-var app = express();
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
-// View engine setup
+const app = express();
+
 app.set('views', path.join(__dirname, 'views/pages'));
 app.set('layout', path.join(__dirname, 'views/layouts/main'));
 app.use(expressLayouts);
@@ -33,18 +45,16 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-// Sessão
 app.use(
 	session({
 		secret: process.env.SESSION_SECRET || 'DEFAULT_SECRET',
 		resave: false,
 		saveUninitialized: false,
-		cookie: { maxAge: 1000 * 60 * 60 * 24 } // 1 dia
+		cookie: { maxAge: 1000 * 60 * 60 * 24 }
 	})
 );
 app.use(flash());
 
-// Variáveis globais para todas as views (usuário logado e mensagens flash)
 app.use((req, res, next) => {
 	res.locals.messages = req.flash();
 	res.locals.user = req.session.user || null;
@@ -54,7 +64,6 @@ app.use((req, res, next) => {
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Rotas
 app.use('/', indexRouter);
 app.use('/', userRouter);
 app.use('/', categoryRouter);
@@ -64,14 +73,12 @@ app.use('/', commentRouter);
 app.use('/', likeRouter);
 app.use('/', actionRouter);
 app.use('/', favoriteRouter);
-app.use('/admin', adminRouter); // protegido por adminAuth dentro do router
+app.use('/admin', adminRouter);
 
-// 404
 app.use(function (req, res, next) {
 	next(createError(404));
 });
 
-// Error handler
 app.use(function (err, req, res, next) {
 	res.locals.message = err.message;
 	res.locals.error = req.app.get('env') === 'development' ? err : {};
@@ -79,19 +86,6 @@ app.use(function (err, req, res, next) {
 	res.render('error');
 });
 
-// Inicialização do banco
-const sequelize = require('./config/database');
-require('./modules/user/userModel');
-require('./modules/category/categoryModel');
-require('./modules/tip/tipModel');
-require('./modules/post/postModel');
-require('./modules/comment/commentModel');
-require('./modules/like/likeModel');
-require('./modules/action/actionModel');
-require('./modules/favorite/favoriteModel');
-require('./modules/associations'); // associações entre models
-
-// Conexão e sincronização (não roda em modo de teste)
 if (process.env.NODE_ENV !== 'test') {
 	sequelize
 		.authenticate()
@@ -106,4 +100,4 @@ if (process.env.NODE_ENV !== 'test') {
 	console.log('---===========================---');
 }
 
-module.exports = app;
+export default app;

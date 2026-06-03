@@ -1,7 +1,6 @@
-const favoriteService = require('./favoriteService');
-const tipService = require('../tip/tipService');
+import * as favoriteService from './favoriteService.js';
 
-exports.list = async (req, res) => {
+export const list = async (req, res) => {
 	try {
 		const favorites = await favoriteService.listByUser(req.session.user.id);
 		res.render('favorites', {
@@ -15,7 +14,7 @@ exports.list = async (req, res) => {
 	}
 };
 
-exports.toggle = async (req, res) => {
+export const toggle = async (req, res) => {
 	try {
 		const result = await favoriteService.toggle(req.session.user.id, req.params.tipId);
 		if (req.accepts('json') && !req.accepts('html')) {

@@ -7,7 +7,6 @@
  *  R3: !autenticado + admin    → 401/redirect
  *  R4: !autenticado + !admin   → 401/redirect
  */
-import { describe, it, expect, vi } from 'vitest';
 import adminAuth from '../../middlewares/adminAuth.js';
 
 function mockReq(session = null) {

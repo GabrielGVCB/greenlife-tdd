@@ -1,7 +1,8 @@
-const express = require('express');
+import express from 'express';
+import * as controller from './tipController.js';
+
 const router = express.Router();
-const controller = require('./tipController');
 
 router.get('/tip/:id', controller.show);
 
-module.exports = router;
+export default router;

@@ -1,9 +1,9 @@
-const userService = require('./userService');
+import * as userService from './userService.js';
 
 /**
  * GET /login
  */
-exports.showLogin = (req, res) => {
+export const showLogin = (req, res) => {
 	if (req.session.user) return res.redirect('/home');
 	res.render('login', { title: 'Entrar - Green Life' });
 };
@@ -12,7 +12,7 @@ exports.showLogin = (req, res) => {
  * POST /login
  * Cobre R-01 (compara hash bcrypt) e dá feedback genérico para não vazar info.
  */
-exports.login = async (req, res) => {
+export const login = async (req, res) => {
 	try {
 		const { login, password } = req.body;
 		const result = await userService.authenticate(login, password);
@@ -36,7 +36,7 @@ exports.login = async (req, res) => {
 /**
  * GET /register
  */
-exports.showRegister = (req, res) => {
+export const showRegister = (req, res) => {
 	if (req.session.user) return res.redirect('/home');
 	res.render('register', { title: 'Criar conta - Green Life' });
 };
@@ -45,7 +45,7 @@ exports.showRegister = (req, res) => {
  * POST /register
  * Cobre R-04 (email), R-11 (senha curta) via service.
  */
-exports.register = async (req, res) => {
+export const register = async (req, res) => {
 	try {
 		const { username, fullName, email, password, confirmPassword } = req.body;
 
@@ -78,7 +78,7 @@ exports.register = async (req, res) => {
 /**
  * GET /logout
  */
-exports.logout = (req, res) => {
+export const logout = (req, res) => {
 	req.session.destroy(() => {
 		res.redirect('/');
 	});
@@ -87,7 +87,7 @@ exports.logout = (req, res) => {
 /**
  * GET /profile/edit
  */
-exports.showEditProfile = (req, res) => {
+export const showEditProfile = (req, res) => {
 	res.render('edit-profile', {
 		title: 'Editar perfil - Green Life',
 		user: req.session.user
@@ -97,7 +97,7 @@ exports.showEditProfile = (req, res) => {
 /**
  * POST /profile/edit
  */
-exports.updateProfile = async (req, res) => {
+export const updateProfile = async (req, res) => {
 	try {
 		const { fullName, bio } = req.body;
 		const updateData = { fullName, bio };

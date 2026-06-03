@@ -1,8 +1,8 @@
-const actionService = require('./actionService');
-const categoryService = require('../category/categoryService');
-const tipService = require('../tip/tipService');
+import * as actionService from './actionService.js';
+import * as categoryService from '../category/categoryService.js';
+import * as tipService from '../tip/tipService.js';
 
-exports.list = async (req, res) => {
+export const list = async (req, res) => {
 	try {
 		const userId = req.session.user.id;
 		const actions = await actionService.listByUser(userId);
@@ -22,7 +22,7 @@ exports.list = async (req, res) => {
 	}
 };
 
-exports.showNew = async (req, res) => {
+export const showNew = async (req, res) => {
 	const categories = await categoryService.listAll();
 	const tips = await tipService.listAll({ limit: 100 });
 	res.render('action-form', {
@@ -32,7 +32,7 @@ exports.showNew = async (req, res) => {
 	});
 };
 
-exports.create = async (req, res) => {
+export const create = async (req, res) => {
 	try {
 		const data = { ...req.body, userId: req.session.user.id };
 		const result = await actionService.create(data);
@@ -49,7 +49,7 @@ exports.create = async (req, res) => {
 	}
 };
 
-exports.delete = async (req, res) => {
+export const deleteAction = async (req, res) => {
 	const result = await actionService.remove(req.params.id, req.session.user.id);
 	if (!result.ok) req.flash('error', result.error);
 	else req.flash('success', 'Ação removida.');

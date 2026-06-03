@@ -1,11 +1,11 @@
-const bcrypt = require('bcrypt');
-const { Op } = require('sequelize');
-const User = require('./userModel');
-const {
+import bcrypt from 'bcryptjs';
+import { Op } from 'sequelize';
+import User from './userModel.js';
+import {
 	isValidEmail,
 	isValidPassword,
 	isValidUsername
-} = require('../../middlewares/validators');
+} from '../../middlewares/validators.js';
 
 const SALT_ROUNDS = 10;
 
@@ -77,12 +77,12 @@ async function authenticate(login, password) {
 	}
 
 	if (!user) {
-		if (DEBUG_AUTH) console.log(`[AUTH] ❌ nenhum usuário encontrado para "${loginClean}"`);
+		if (DEBUG_AUTH) console.log(`[AUTH] nenhum usuário encontrado para "${loginClean}"`);
 		return { ok: false, error: 'Usuário ou senha incorretos.' };
 	}
 
 	if (DEBUG_AUTH) {
-		console.log(`[AUTH] ✅ usuário encontrado: id=${user.id} email=${user.email} role=${user.role}`);
+		console.log(`[AUTH] usuário encontrado: id=${user.id} email=${user.email} role=${user.role}`);
 		console.log(`[AUTH] hash no banco começa com: ${user.password.substring(0, 7)}...`);
 	}
 
@@ -120,10 +120,4 @@ function toSessionUser(user) {
 	};
 }
 
-module.exports = {
-	createUser,
-	authenticate,
-	updateProfile,
-	toSessionUser,
-	SALT_ROUNDS
-};
+export { createUser, authenticate, updateProfile, toSessionUser, SALT_ROUNDS };

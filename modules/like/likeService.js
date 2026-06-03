@@ -1,4 +1,4 @@
-const Like = require('./likeModel');
+import Like from './likeModel.js';
 
 /**
  * Toggle de like em um post.
@@ -49,8 +49,4 @@ async function userHasLiked(userId, postId) {
 	return !!like;
 }
 
-module.exports = {
-	toggle,
-	countByPost,
-	userHasLiked
-};
+export { toggle, countByPost, userHasLiked };

@@ -3,20 +3,20 @@
  *
  * Uso: node scripts/seed.js
  */
-require('dotenv').config();
-const bcrypt = require('bcrypt');
-const sequelize = require('../config/database');
+import 'dotenv/config';
+import bcrypt from 'bcryptjs';
+import sequelize from '../config/database.js';
 
 // Carrega models e associações
-require('../modules/user/userModel');
-require('../modules/category/categoryModel');
-require('../modules/tip/tipModel');
-require('../modules/post/postModel');
-require('../modules/comment/commentModel');
-require('../modules/like/likeModel');
-require('../modules/action/actionModel');
-require('../modules/favorite/favoriteModel');
-const { User, Category, Tip } = require('../modules/associations');
+import '../modules/user/userModel.js';
+import '../modules/category/categoryModel.js';
+import '../modules/tip/tipModel.js';
+import '../modules/post/postModel.js';
+import '../modules/comment/commentModel.js';
+import '../modules/like/likeModel.js';
+import '../modules/action/actionModel.js';
+import '../modules/favorite/favoriteModel.js';
+import { User, Category, Tip } from '../modules/associations.js';
 
 const CATEGORIES = [
 	{ name: 'Energia',     slug: 'energia',     description: 'Consumo consciente em casa',             icon: 'bi-lightning-charge', color: '#C48430' },
@@ -30,10 +30,10 @@ const CATEGORIES = [
 async function run() {
 	try {
 		await sequelize.authenticate();
-		console.log('✅ Banco conectado');
+		console.log('Banco conectado');
 
 		await sequelize.sync({ alter: true });
-		console.log('✅ Banco sincronizado');
+		console.log('Banco sincronizado');
 
 		// Admin default
 		const adminEmail = 'admin@greenlife.com';
@@ -47,9 +47,9 @@ async function run() {
 				password: hash,
 				role: 'admin'
 			});
-			console.log('✅ Admin criado: admin@greenlife.com / admin@123');
+			console.log('Admin criado: admin@greenlife.com / admin@123');
 		} else {
-			console.log('ℹ️  Admin já existe, pulando.');
+			console.log('Admin já existe, pulando.');
 		}
 
 		// Categorias
@@ -82,10 +82,10 @@ async function run() {
 			}
 		}
 
-		console.log('\n🌱 Seed concluído com sucesso!');
+		console.log('\nSeed concluído com sucesso!');
 		process.exit(0);
 	} catch (err) {
-		console.error('❌ Erro no seed:', err);
+		console.error('Erro no seed:', err);
 		process.exit(1);
 	}
 }

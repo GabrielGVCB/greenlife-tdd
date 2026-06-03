@@ -1,9 +1,10 @@
-const express = require('express');
+import express from 'express';
+import * as controller from './userController.js';
+import auth from '../../middlewares/auth.js';
+import { profileUpload } from '../../middlewares/multer.js';
+import uploadErrorHandler from '../../middlewares/uploadErrorHandler.js';
+
 const router = express.Router();
-const controller = require('./userController');
-const auth = require('../../middlewares/auth');
-const { profileUpload } = require('../../middlewares/multer');
-const uploadErrorHandler = require('../../middlewares/uploadErrorHandler');
 
 // Autenticação
 router.get('/login', controller.showLogin);
@@ -24,4 +25,4 @@ router.post(
 	controller.updateProfile
 );
 
-module.exports = router;
+export default router;

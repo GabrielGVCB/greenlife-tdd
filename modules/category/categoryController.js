@@ -1,12 +1,12 @@
-const categoryService = require('./categoryService');
-const tipService = require('../tip/tipService');
-const postService = require('../post/postService');
+import * as categoryService from './categoryService.js';
+import * as tipService from '../tip/tipService.js';
+import * as postService from '../post/postService.js';
 
 /**
  * GET /home → tela "Aprenda práticas sustentáveis"
  * Lista todas as categorias com contagem de dicas (cobre R-03 com try/catch)
  */
-exports.showHome = async (req, res) => {
+export const showHome = async (req, res) => {
 	try {
 		const categories = await categoryService.listAll();
 		const tips = await tipService.listAll({ limit: 20 });
@@ -37,7 +37,7 @@ exports.showHome = async (req, res) => {
 /**
  * GET /category/:slug → detalhes de uma categoria com dicas e mini-feed
  */
-exports.showCategory = async (req, res) => {
+export const showCategory = async (req, res) => {
 	try {
 		const category = await categoryService.findBySlug(req.params.slug);
 		if (!category) {
@@ -71,7 +71,7 @@ exports.showCategory = async (req, res) => {
 
 // === ADMIN ===
 
-exports.adminList = async (req, res) => {
+export const adminList = async (req, res) => {
 	const categories = await categoryService.listAll();
 	res.render('admin/categories', {
 		title: 'Gerenciar categorias - Admin',
@@ -79,21 +79,21 @@ exports.adminList = async (req, res) => {
 	});
 };
 
-exports.adminCreate = async (req, res) => {
+export const adminCreate = async (req, res) => {
 	const result = await categoryService.create(req.body);
 	if (!result.ok) req.flash('error', result.error);
 	else req.flash('success', 'Categoria criada com sucesso!');
 	res.redirect('/admin/categories');
 };
 
-exports.adminUpdate = async (req, res) => {
+export const adminUpdate = async (req, res) => {
 	const result = await categoryService.update(req.params.id, req.body);
 	if (!result.ok) req.flash('error', result.error);
 	else req.flash('success', 'Categoria atualizada!');
 	res.redirect('/admin/categories');
 };
 
-exports.adminDelete = async (req, res) => {
+export const adminDelete = async (req, res) => {
 	const result = await categoryService.remove(req.params.id);
 	if (!result.ok) req.flash('error', result.error);
 	else req.flash('success', 'Categoria removida.');

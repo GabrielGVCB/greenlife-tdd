@@ -1,30 +1,33 @@
 /**
- * Testes unitários para userService.createUser
+ * Testes unitários para userService
  *
  * Cobre Riscos:
- *  - R-01 (senha em texto plano) — valida que bcrypt.hash é SEMPRE chamado
+ *  - R-01 (senha em texto plano) — valida que bcryptjs.hash é SEMPRE chamado
  *  - R-04 (email inválido)
  *  - R-11 (senha curta)
  *
- * Usa createRequire para acessar o mesmo cache CJS que o service usa internamente,
- * garantindo que vi.spyOn intercepte as chamadas reais do service.
+ * Usa vi.mock para isolar a dependência do model (banco de dados).
  */
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import bcrypt from 'bcrypt';
-import { createRequire } from 'module';
+import bcryptjs from 'bcryptjs';
 
-const cjsRequire = createRequire(import.meta.url);
-const User = cjsRequire('../../modules/user/userModel');
-const userService = cjsRequire('../../modules/user/userService');
+const mockFindOne = vi.fn();
+const mockCreate = vi.fn();
+const mockFindByPk = vi.fn();
+
+vi.mock('../../modules/user/userModel.js', () => ({
+	default: {
+		findOne: mockFindOne,
+		create: mockCreate,
+		findByPk: mockFindByPk
+	}
+}));
+
+const userService = await import('../../modules/user/userService.js');
 
 describe('userService.createUser', () => {
 	beforeEach(() => {
-		vi.spyOn(User, 'findOne').mockResolvedValue(null);
-		vi.spyOn(User, 'create').mockImplementation((data) => Promise.resolve({ id: 1, ...data }));
-	});
-
-	afterEach(() => {
-		vi.restoreAllMocks();
+		mockFindOne.mockResolvedValue(null);
+		mockCreate.mockImplementation((data) => Promise.resolve({ id: 1, ...data }));
 	});
 
 	it('[R-01] NUNCA salva senha em texto plano', async () => {
@@ -36,16 +39,14 @@ describe('userService.createUser', () => {
 		});
 
 		expect(result.ok).toBe(true);
-		expect(User.create).toHaveBeenCalledOnce();
+		expect(mockCreate).toHaveBeenCalledOnce();
 
-		const createdData = User.create.mock.calls[0][0];
-		// A senha salva NÃO pode ser "senhaSegura123"
+		const createdData = mockCreate.mock.calls[0][0];
 		expect(createdData.password).not.toBe('senhaSegura123');
-		// E deve ter o formato bcrypt ($2a$, $2b$, $2y$)
 		expect(createdData.password).toMatch(/^\$2[aby]\$/);
 	});
 
-	it('[R-01] O hash gerado deve ser verificável com bcrypt.compare', async () => {
+	it('[R-01] O hash gerado deve ser verificável com bcryptjs.compare', async () => {
 		await userService.createUser({
 			username: 'joao',
 			fullName: 'João Verde',
@@ -53,8 +54,8 @@ describe('userService.createUser', () => {
 			password: 'minhaSenha12345'
 		});
 
-		const hashedPassword = User.create.mock.calls[0][0].password;
-		const match = await bcrypt.compare('minhaSenha12345', hashedPassword);
+		const hashedPassword = mockCreate.mock.calls[0][0].password;
+		const match = await bcryptjs.compare('minhaSenha12345', hashedPassword);
 		expect(match).toBe(true);
 	});
 
@@ -67,7 +68,18 @@ describe('userService.createUser', () => {
 		});
 		expect(result.ok).toBe(false);
 		expect(result.error).toMatch(/e-mail/i);
-		expect(User.create).not.toHaveBeenCalled();
+		expect(mockCreate).not.toHaveBeenCalled();
+	});
+
+	it('[R-04] rejeita e-mail sem domínio', async () => {
+		const result = await userService.createUser({
+			username: 'testuser',
+			fullName: 'Test User',
+			email: 'user@',
+			password: 'abcdefgh'
+		});
+		expect(result.ok).toBe(false);
+		expect(result.error).toMatch(/e-mail/i);
 	});
 
 	it('[R-11] rejeita senha com 7 caracteres', async () => {
@@ -79,7 +91,7 @@ describe('userService.createUser', () => {
 		});
 		expect(result.ok).toBe(false);
 		expect(result.error).toMatch(/senha/i);
-		expect(User.create).not.toHaveBeenCalled();
+		expect(mockCreate).not.toHaveBeenCalled();
 	});
 
 	it('[R-11] aceita senha com exatamente 8 caracteres', async () => {
@@ -93,7 +105,7 @@ describe('userService.createUser', () => {
 	});
 
 	it('rejeita e-mail duplicado', async () => {
-		User.findOne.mockResolvedValueOnce({ id: 99, email: 'existente@example.com' });
+		mockFindOne.mockResolvedValueOnce({ id: 99, email: 'existente@example.com' });
 		const result = await userService.createUser({
 			username: 'novo',
 			fullName: 'Novo User',
@@ -102,6 +114,39 @@ describe('userService.createUser', () => {
 		});
 		expect(result.ok).toBe(false);
 		expect(result.error).toMatch(/já cadastrado/i);
+	});
+
+	it('rejeita username inválido com caractere especial', async () => {
+		const result = await userService.createUser({
+			username: 'user@name',
+			fullName: 'Test User',
+			email: 'test@example.com',
+			password: 'abcdefgh'
+		});
+		expect(result.ok).toBe(false);
+		expect(result.error).toMatch(/usuário/i);
+	});
+
+	it('rejeita username com menos de 3 caracteres', async () => {
+		const result = await userService.createUser({
+			username: 'ab',
+			fullName: 'Test User',
+			email: 'test@example.com',
+			password: 'abcdefgh'
+		});
+		expect(result.ok).toBe(false);
+		expect(result.error).toMatch(/usuário/i);
+	});
+
+	it('rejeita fullName vazio', async () => {
+		const result = await userService.createUser({
+			username: 'validuser',
+			fullName: '',
+			email: 'test@example.com',
+			password: 'abcdefgh'
+		});
+		expect(result.ok).toBe(false);
+		expect(result.error).toMatch(/nome/i);
 	});
 });
 
@@ -118,5 +163,81 @@ describe('userService.toSessionUser', () => {
 		const sessionUser = userService.toSessionUser(user);
 		expect(sessionUser.password).toBeUndefined();
 		expect(sessionUser.username).toBe('maria');
+	});
+});
+
+describe('userService.authenticate', () => {
+	it('[R-02] rejeita quando login está vazio', async () => {
+		const result = await userService.authenticate('', 'senha123');
+		expect(result.ok).toBe(false);
+		expect(result.error).toMatch(/incompletas/i);
+		expect(mockFindOne).not.toHaveBeenCalled();
+	});
+
+	it('[R-02] rejeita quando senha está vazia', async () => {
+		const result = await userService.authenticate('user@test.com', '');
+		expect(result.ok).toBe(false);
+		expect(result.error).toMatch(/incompletas/i);
+		expect(mockFindOne).not.toHaveBeenCalled();
+	});
+
+	it('[R-02] retorna erro para usuário inexistente', async () => {
+		mockFindOne.mockResolvedValue(null);
+		const result = await userService.authenticate('ghost@test.com', 'qualquersenha');
+		expect(result.ok).toBe(false);
+		expect(result.error).toMatch(/incorretos/i);
+	});
+
+	it('[R-02] retorna erro quando a senha está errada', async () => {
+		const hash = await bcryptjs.hash('senhaCorreta123', 10);
+		mockFindOne.mockResolvedValue({ id: 1, email: 'u@t.com', password: hash, role: 'user' });
+		const result = await userService.authenticate('u@t.com', 'senhaErrada');
+		expect(result.ok).toBe(false);
+		expect(result.error).toMatch(/incorretos/i);
+	});
+
+	it('[R-02] autentica com sucesso por e-mail', async () => {
+		const hash = await bcryptjs.hash('senhaCorreta123', 10);
+		const fakeUser = { id: 1, email: 'u@t.com', username: 'uone', password: hash, role: 'user' };
+		mockFindOne.mockResolvedValue(fakeUser);
+		const result = await userService.authenticate('u@t.com', 'senhaCorreta123');
+		expect(result.ok).toBe(true);
+		expect(result.user).toEqual(fakeUser);
+	});
+
+	it('[R-02] autentica com sucesso por username (fallback)', async () => {
+		const hash = await bcryptjs.hash('senhaCorreta123', 10);
+		const fakeUser = { id: 2, email: 'u2@t.com', username: 'utwo', password: hash, role: 'user' };
+		mockFindOne
+			.mockResolvedValueOnce(null)       // busca por e-mail: não encontrado
+			.mockResolvedValueOnce(fakeUser);  // busca por username: encontrado
+		const result = await userService.authenticate('utwo', 'senhaCorreta123');
+		expect(result.ok).toBe(true);
+		expect(result.user.username).toBe('utwo');
+	});
+});
+
+describe('userService.updateProfile', () => {
+	it('retorna erro se userId não existe no banco', async () => {
+		mockFindByPk.mockResolvedValue(null);
+		const result = await userService.updateProfile(999, { fullName: 'Novo Nome' });
+		expect(result.ok).toBe(false);
+		expect(result.error).toMatch(/não encontrado/i);
+	});
+
+	it('atualiza fullName e bio com sucesso', async () => {
+		const mockUserRecord = {
+			id: 1,
+			fullName: 'Nome Antigo',
+			bio: null,
+			profilePicture: null,
+			save: vi.fn().mockResolvedValue(undefined)
+		};
+		mockFindByPk.mockResolvedValue(mockUserRecord);
+		const result = await userService.updateProfile(1, { fullName: 'Nome Novo', bio: 'Bio nova' });
+		expect(result.ok).toBe(true);
+		expect(mockUserRecord.fullName).toBe('Nome Novo');
+		expect(mockUserRecord.bio).toBe('Bio nova');
+		expect(mockUserRecord.save).toHaveBeenCalledOnce();
 	});
 });

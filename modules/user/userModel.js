@@ -1,55 +1,28 @@
-const { DataTypes } = require('sequelize');
-const sequelize = require('../../config/database');
+import { DataTypes } from 'sequelize';
+import sequelize from '../../config/database.js';
 
 const User = sequelize.define(
 	'User',
 	{
-		id: {
-			type: DataTypes.INTEGER,
-			autoIncrement: true,
-			primaryKey: true
-		},
-		username: {
-			type: DataTypes.STRING(30),
-			allowNull: false,
-			unique: true
-		},
-		fullName: {
-			type: DataTypes.STRING(120),
-			allowNull: false
-		},
+		id: { type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true },
+		username: { type: DataTypes.STRING(30), allowNull: false, unique: true },
+		fullName: { type: DataTypes.STRING(120), allowNull: false },
 		email: {
 			type: DataTypes.STRING(120),
 			allowNull: false,
 			unique: true,
-			validate: {
-				isEmail: true
-			}
+			validate: { isEmail: true }
 		},
-		// Sempre hash bcrypt — nunca texto plano (R-01)
-		password: {
-			type: DataTypes.STRING(255),
-			allowNull: false
-		},
-		bio: {
-			type: DataTypes.STRING(255),
-			allowNull: true
-		},
-		profilePicture: {
-			type: DataTypes.STRING(255),
-			allowNull: true
-		},
-		// "user" ou "admin" — controle de acesso (R-06)
+		password: { type: DataTypes.STRING(255), allowNull: false },
+		bio: { type: DataTypes.STRING(255), allowNull: true },
+		profilePicture: { type: DataTypes.STRING(255), allowNull: true },
 		role: {
 			type: DataTypes.ENUM('user', 'admin'),
 			allowNull: false,
 			defaultValue: 'user'
 		}
 	},
-	{
-		tableName: 'users',
-		paranoid: true // soft delete via deletedAt
-	}
+	{ tableName: 'users', paranoid: true }
 );
 
-module.exports = User;
+export default User;

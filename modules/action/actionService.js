@@ -1,7 +1,7 @@
-const Action = require('./actionModel');
-const Category = require('../category/categoryModel');
-const Tip = require('../tip/tipModel');
-const { fn, col } = require('sequelize');
+import Action from './actionModel.js';
+import Category from '../category/categoryModel.js';
+import Tip from '../tip/tipModel.js';
+import { fn, col } from 'sequelize';
 
 async function create(data) {
 	const { title, description, impactKgCO2, userId, tipId, categoryId } = data;
@@ -50,10 +50,4 @@ async function remove(id, userId) {
 	return { ok: true };
 }
 
-module.exports = {
-	create,
-	listByUser,
-	totalImpactByUser,
-	countByUser,
-	remove
-};
+export { create, listByUser, totalImpactByUser, countByUser, remove };

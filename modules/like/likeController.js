@@ -1,10 +1,10 @@
-const likeService = require('./likeService');
+import * as likeService from './likeService.js';
 
 /**
  * POST /post/:postId/like
  * Aceita JSON (para AJAX) ou form (redirect).
  */
-exports.toggle = async (req, res) => {
+export const toggle = async (req, res) => {
 	try {
 		const result = await likeService.toggle(req.session.user.id, req.params.postId);
 
