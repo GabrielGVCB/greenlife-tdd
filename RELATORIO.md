@@ -103,7 +103,86 @@ it('[R-11] aceita senha com exatamente 8 caracteres', async () => {
 
 ---
 
-## 4. Uso de Mocks para Isolamento
+## 4. Refatorações Realizadas Durante o Ciclo TDD
+
+### Refatoração 1 — Extração de validações para `validators.js`
+
+**Antes:**
+As validações de e-mail, senha e username estavam embutidas diretamente dentro de `createUser()`, misturando responsabilidades e tornando o código difícil de reaproveitar:
+
+```js
+// ANTES — validação inline em userService.js
+async function createUser({ username, email, password }) {
+  if (!email || !email.includes('@') || email.split('@')[1].length === 0) {
+    return { ok: false, error: 'E-mail inválido.' };
+  }
+  if (!password || password.length < 8) {
+    return { ok: false, error: 'Senha deve ter no mínimo 8 caracteres.' };
+  }
+  if (!username || !/^[a-zA-Z0-9_]{3,30}$/.test(username)) {
+    return { ok: false, error: 'Nome de usuário inválido.' };
+  }
+  // ...resto da função
+}
+```
+
+**Depois:**
+As validações foram extraídas para `middlewares/validators.js` como funções puras, exportadas individualmente e cobertas por seus próprios testes unitários:
+
+```js
+// DEPOIS — validators.js com funções puras reutilizáveis
+export function isValidEmail(email) {
+  if (!email) return { valid: false, message: 'E-mail inválido.' };
+  const [user, domain] = String(email).split('@');
+  if (!user || !domain) return { valid: false, message: 'E-mail inválido.' };
+  return { valid: true };
+}
+
+// Em userService.js — limpo e delegado
+const emailCheck = isValidEmail(email);
+if (!emailCheck.valid) return { ok: false, error: emailCheck.message };
+```
+
+**Benefício:** As funções de validação passaram a ser reutilizáveis em qualquer parte do sistema (outros services, middlewares) e ganharam 23 testes unitários independentes em `tests/unit/validators.test.js`, aumentando a confiança no comportamento dos limites sem depender do contexto de `createUser`.
+
+---
+
+### Refatoração 2 — Migração de CJS para ESM e correção do isolamento de mocks
+
+**Antes:**
+O projeto usava CommonJS (`require` / `module.exports`). O Vitest opera sobre o sistema de módulos ESM nativo e mantém um cache separado do cache CJS do Node.js. Por isso, `vi.mock()` interceptava os imports do arquivo de teste mas **não** interceptava os `require()` dentro dos services — os mocks não funcionavam:
+
+```js
+// ANTES — CJS em userService.js
+const User = require('./userModel');
+const bcrypt = require('bcrypt');
+module.exports = { createUser };
+
+// ANTES — teste falhava silenciosamente: User.create real era chamado
+vi.mock('../../modules/user/userModel.js', () => ({ ... }));
+// ↑ interceptava o ESM import do teste, mas NÃO o require() do service
+```
+
+**Depois:**
+Após migrar todo o projeto para ESM (`"type": "module"` no `package.json` e todos os arquivos convertidos para `import/export`), o Vitest passou a interceptar corretamente os módulos em ambos os lados:
+
+```js
+// DEPOIS — ESM em userService.js
+import User from './userModel.js';
+import bcrypt from 'bcryptjs';
+export { createUser };
+
+// DEPOIS — vi.mock intercepta corretamente o import do service
+vi.mock('../../modules/user/userModel.js', () => ({
+  default: { findOne: mockFindOne, create: mockCreate }
+}));
+```
+
+**Benefício:** Os testes passaram a isolar completamente o banco de dados. O teste de e-mail duplicado, que antes chamava o banco real e falhava de forma não-determinística, passou a funcionar 100% de forma previsível. Além disso, a troca de `bcrypt` para `bcryptjs` (exigida pela especificação) tornou-se trivial com ESM.
+
+---
+
+## 5. Uso de Mocks para Isolamento
 
 O `userModel.js` (Sequelize) é mockado com `vi.mock()`:
 
