@@ -46,6 +46,17 @@ describe('userService.createUser', () => {
 		expect(createdData.password).toMatch(/^\$2[aby]\$/);
 	});
 
+	it('[R-01] chama bcryptjs.hash com a senha e o salt corretos (vi.spyOn)', async () => {
+		const hashSpy = vi.spyOn(bcryptjs, 'hash');
+		await userService.createUser({
+			username: 'spy',
+			fullName: 'Spy User',
+			email: 'spy@greenlife.com',
+			password: 'senhaEspiada'
+		});
+		expect(hashSpy).toHaveBeenCalledWith('senhaEspiada', userService.SALT_ROUNDS);
+	});
+
 	it('[R-01] O hash gerado deve ser verificável com bcryptjs.compare', async () => {
 		await userService.createUser({
 			username: 'joao',
