@@ -1,5 +1,11 @@
 # Relatório TDD — GreenLife
 
+## Vídeo Explicativo
+🎥 **Link:** https://youtu.be/SvQYmdgLlKs
+
+---
+
+
 ## 1. Funcionalidade Escolhida: Cadastro de Usuário
 
 ### Descrição
